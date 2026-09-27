@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MqttNetService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75c098cab4681af0bb8e1fb5becc5d928a683cdb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5300e5ad058990b9e414f7cf5f518fb8d360a15a")]
 [assembly: System.Reflection.AssemblyProductAttribute("MqttNetService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MqttNetService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
