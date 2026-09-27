@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY src/MqtNetService/MqtNetService.csproj ./
-RUN dotnet restore MqtNetService.csproj \
+COPY src/MqttNetService/MqttNetService.csproj ./
+RUN dotnet restore MqttNetService.csproj \
     -c Release \
     -o /out \
     --no-restore \
@@ -13,4 +13,4 @@ WORKDIR /app
 COPY --from=build /out/ ./
 USER $APP_UID
 
-ENTRYPOINT [ "dotnet", "MqtNetService.dll" ]
+ENTRYPOINT [ "dotnet", "MqttNetService.dll" ]
