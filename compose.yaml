@@ -1,3 +1,4 @@
+name: mqtt
 services:
   mqtt:
     build: .
