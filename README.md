@@ -17,22 +17,8 @@ Our itinerary should be:
 14. Testing: xUnit, mocking, integration tests.
 
 
-El siguiente paso
-No instalaría MQTTnet todavía.
-El siguiente paso lógico es coger solo estas seis líneas:
-using MqttNetService;
-
-var builder = Host.CreateApplicationBuilder(args);
-
-builder.Services.AddHostedService<Worker>();
-
-var host = builder.Build();
-
-host.Run();
-
-y desmontarlas hasta entender qué objetos existen en memoria, qué tipo tiene cada variable, quién crea el Worker, por qué tú nunca haces new Worker(), cómo entra ILogger<Worker>, qué es exactamente DI y qué ocurre internamente desde que ejecutas dotnet run hasta que comienza ExecuteAsync().
-Ese es el fundamento sobre el que después construiremos todo el MQTT receiver.
 
 
 
 docker compose up -d --build
+docker compose logs --tail 50 -f mqtt
