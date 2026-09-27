@@ -40,6 +40,7 @@
 /workspaces/mqtt-net-service/src/MqttNetService/obj/Debug/net10.0/MqttNetService.AssemblyInfoInputs.cache
 /workspaces/mqtt-net-service/src/MqttNetService/obj/Debug/net10.0/MqttNetService.AssemblyInfo.cs
 /workspaces/mqtt-net-service/src/MqttNetService/obj/Debug/net10.0/MqttNetService.csproj.CoreCompileInputs.cache
+/workspaces/mqtt-net-service/src/MqttNetService/obj/Debug/net10.0/MqttNetService.sourcelink.json
 /workspaces/mqtt-net-service/src/MqttNetService/obj/Debug/net10.0/MqttNetS.1359CCA3.Up2Date
 /workspaces/mqtt-net-service/src/MqttNetService/obj/Debug/net10.0/MqttNetService.dll
 /workspaces/mqtt-net-service/src/MqttNetService/obj/Debug/net10.0/refint/MqttNetService.dll
