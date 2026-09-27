@@ -32,3 +32,7 @@ host.Run();
 
 y desmontarlas hasta entender qué objetos existen en memoria, qué tipo tiene cada variable, quién crea el Worker, por qué tú nunca haces new Worker(), cómo entra ILogger<Worker>, qué es exactamente DI y qué ocurre internamente desde que ejecutas dotnet run hasta que comienza ExecuteAsync().
 Ese es el fundamento sobre el que después construiremos todo el MQTT receiver.
+
+
+
+docker compose up -d --build
