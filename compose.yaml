@@ -4,13 +4,11 @@ services:
     image: mqtt-net-services
     restart: unless-stopped
     environment:
-      DOTNET_ENVIROMENT: Production
-
-
+      DOTNET_ENVIRONMENT: Production
 
 # docker compose up -d --build
   # build construye una imagen, up crea/actualiza el contenedor del servicio y lo arranca
   # d lo deja funcionando en segundo plano
 
-# docker compose ps
+# docker compose ps 
 # docker compose logs --tail 50 -f mqtt
