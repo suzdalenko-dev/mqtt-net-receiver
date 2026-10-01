@@ -1,8 +1,8 @@
 name: mqtt
 services:
-  mqtt:
-    build: .
-    image: mqtt-net-services
+  mqtt-net-service:
+    build: .                  # se va a DockerFile y vuele
+    image: net-serv           # vuelve aqui para arrancar la imagen creada con la configuarcion de DockerFile
     restart: unless-stopped
     environment:
       DOTNET_ENVIRONMENT: Production
