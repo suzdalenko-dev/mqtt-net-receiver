@@ -12,6 +12,7 @@ COPY src/MqttNetService/ ./
 RUN dotnet publish MqttNetService.csproj -c Release -o /out --no-restore -p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/runtime:10.0
+
 WORKDIR /app
 
 COPY --from=build /out/ ./
