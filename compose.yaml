@@ -1,15 +1,28 @@
 name: mqtt
 services:
   mqtt-net-service:
-    build: .                  # se va a DockerFile y vuele
-    image: net-serv           # vuelve aqui para arrancar la imagen creada con la configuarcion de DockerFile
-    restart: unless-stopped
+    build: .                          # Compose pide construir una imagen usando esta carpeta como contexto.
+                                      # Como no indico otro fichero, busca ./Dockerfile.
+
+    image: net-serv                   # La imagen resultante tendrá el nombre/tag net-serv.
+                                      # Después Compose crea el contenedor usando esa imagen.
+
+    restart: unless-stopped           # Política de reinicio del CONTENEDOR.
+
     environment:
-      DOTNET_ENVIRONMENT: Production
+      DOTNET_ENVIRONMENT: Production  # Variable que Compose introduce en el CONTENEDOR.
+
+
+
 
 # docker compose up -d --build
   # build construye una imagen, up crea/actualiza el contenedor del servicio y lo arranca
   # d lo deja funcionando en segundo plano
 
 # docker compose ps 
+# docker compose logs --tail 50 -f mqtt
+# docker stats
+# docker top mqtt-mqtt-net-service-1
+
+# docker compose up -d --build
 # docker compose logs --tail 50 -f mqtt

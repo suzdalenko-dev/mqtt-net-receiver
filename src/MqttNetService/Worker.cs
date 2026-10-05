@@ -10,7 +10,7 @@ public class Worker(ILogger<Worker> logger) : BackgroundService
             {
                 logger.LogInformation("SUZDALENKO {time}", DateTimeOffset.Now);
             }
-            await Task.Delay(1000, stoppingToken);
+            await Task.Delay(22000, stoppingToken);
         }
     }
 }
