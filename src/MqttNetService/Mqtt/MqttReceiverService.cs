@@ -2,23 +2,19 @@ using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Formatter;
 using MQTTnet.Protocol;
-
 namespace MqttNetService.Mqtt;
 
 public sealed class MqttReceiverService : BackgroundService
 {
     private readonly ILogger<MqttReceiverService> _logger;
     private readonly MqttOptions _options;
-
     private readonly IMqttClient _mqttClient;
     private readonly MqttClientOptions _mqttClientOptions;
 
     private bool _stopping;
 
 
-    public MqttReceiverService(
-        ILogger<MqttReceiverService> logger,
-        IOptions<MqttOptions> options)
+    public MqttReceiverService(ILogger<MqttReceiverService> logger, IOptions<MqttOptions> options)
     {
         _logger = logger;
         _options = options.Value;
@@ -133,52 +129,18 @@ public sealed class MqttReceiverService : BackgroundService
     private async Task ConnectAndSubscribeAsync(
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation(
-            "Intentando conexión MQTT con {Host}:{Port}...",
-            _options.Host,
-            _options.Port);
+        _logger.LogInformation("Intentando conexión MQTT con {Host}:{Port}...", _options.Host, _options.Port);
+
+        MqttClientConnectResult connectResult = await _mqttClient.ConnectAsync(_mqttClientOptions, cancellationToken);
+        _logger.LogInformation("MQTT conectado. Result={ResultCode}, SessionPresent={SessionPresent}", connectResult.ResultCode, connectResult.IsSessionPresent);
 
 
-        MqttClientConnectResult connectResult =
-            await _mqttClient.ConnectAsync(
-                _mqttClientOptions,
-                cancellationToken);
-
-
-        _logger.LogInformation(
-            "MQTT conectado. Result={ResultCode}, SessionPresent={SessionPresent}",
-            connectResult.ResultCode,
-            connectResult.IsSessionPresent);
-
-
-        /*
-         * Estamos usando MQTT 3.1.1 + CleanSession=false.
-         *
-         * Si SessionPresent=true:
-         *
-         *      el broker recuerda nuestra sesión anterior,
-         *      incluida la suscripción.
-         *
-         * Por tanto NO necesitamos volver a subscribirnos.
-         *
-         *
-         * Si SessionPresent=false:
-         *
-         *      el broker no tiene nuestra sesión.
-         *
-         * Tenemos que crear de nuevo la suscripción.
-         */
-
-        if (!connectResult.IsSessionPresent)
-        {
+        try {
             await SubscribeAsync(cancellationToken);
-        }
-        else
-        {
-            _logger.LogInformation(
-                "Sesión MQTT persistente recuperada. " +
-                "No es necesario volver a suscribirse.");
-        }
+        } catch {
+           await _mqttClient.TryDisconnectAsync();
+           throw;
+        }   
     }
 
 
