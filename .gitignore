@@ -1,5 +1,7 @@
-**/bin
-**/obj
+artifacts/bin
+artifacts/obj
+artifacts/publish
+artifacts/package
 .git
 data
 .env
