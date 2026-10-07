@@ -22,3 +22,5 @@ Our itinerary should be:
 
 docker compose up -d --build
 docker compose logs --tail 50 -f mqtt
+
+StopAsync

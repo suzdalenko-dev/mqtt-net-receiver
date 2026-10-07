@@ -35,14 +35,11 @@ public sealed class MqttReceiverService : BackgroundService
 
         // De momento solamente comprobamos que llegan mensajes.
         // En el punto 2 este método enviará los mensajes a una cola.
-        _mqttClient.ApplicationMessageReceivedAsync +=
-            OnApplicationMessageReceivedAsync;
+        _mqttClient.ApplicationMessageReceivedAsync += OnApplicationMessageReceivedAsync;
     }
 
 
-    protected override async Task ExecuteAsync(
-        CancellationToken stoppingToken)
-    {
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken){
         _logger.LogInformation(
             "Servicio MQTT iniciado. Broker={Host}:{Port}, ClientId={ClientId}, Topic={Topic}",
             _options.Host,
@@ -243,9 +240,7 @@ public sealed class MqttReceiverService : BackgroundService
     }
 
 
-    private Task OnApplicationMessageReceivedAsync(
-    MqttApplicationMessageReceivedEventArgs args)
-    {
+    private Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs args){
         string payload = args.ApplicationMessage.ConvertPayloadToString() ?? string.Empty;
 
         _logger.LogInformation(
@@ -444,9 +439,7 @@ public sealed class MqttReceiverService : BackgroundService
     }
 
 
-    public override async Task StopAsync(
-        CancellationToken cancellationToken)
-    {
+    public override async Task StopAsync(CancellationToken cancellationToken){
         _stopping = true;
 
         await base.StopAsync(cancellationToken);

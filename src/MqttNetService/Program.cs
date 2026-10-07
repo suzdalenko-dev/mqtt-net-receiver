@@ -6,7 +6,7 @@ var builder = Host.CreateApplicationBuilder(args);
 // MQTT configuration
 // ---------------------------------------------------------
 
-builder.Services.Configure<MqttOptions>(builder.Configuration.GetSection(MqttOptions.SectionName));
+builder.Services.Configure<MqttOptions>(builder.Configuration.GetSection("Mqtt"));
 
 // ---------------------------------------------------------
 // Background services
