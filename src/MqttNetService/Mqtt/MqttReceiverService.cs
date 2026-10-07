@@ -244,25 +244,16 @@ public sealed class MqttReceiverService : BackgroundService
 
 
     private Task OnApplicationMessageReceivedAsync(
-        MqttApplicationMessageReceivedEventArgs args)
+    MqttApplicationMessageReceivedEventArgs args)
     {
-        /*
-         * PUNTO 1:
-         *
-         * Solamente verificamos que llegan mensajes.
-         *
-         * NO escribimos fichero.
-         * NO escribimos PostgreSQL.
-         * NO hacemos trabajo pesado aquí.
-         *
-         * En el punto 2 enviaremos el mensaje a una cola.
-         */
+        string payload = args.ApplicationMessage.ConvertPayloadToString() ?? string.Empty;
 
-        _logger.LogDebug(
-            "Mensaje MQTT recibido. Topic={Topic}, Bytes={Length}",
+        _logger.LogInformation(
+            "MQTT RX | Topic={Topic} | QoS={Qos} | Retain={Retain} | Payload={Payload}",
             args.ApplicationMessage.Topic,
-            args.ApplicationMessage.Payload.Length);
-
+            (int)args.ApplicationMessage.QualityOfServiceLevel,
+            args.ApplicationMessage.Retain,
+            payload);
 
         return Task.CompletedTask;
     }
