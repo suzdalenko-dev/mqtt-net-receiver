@@ -135,17 +135,20 @@ public sealed class MqttReceiverService : BackgroundService
         _logger.LogInformation("MQTT conectado. Result={ResultCode}, SessionPresent={SessionPresent}", connectResult.ResultCode, connectResult.IsSessionPresent);
 
 
-        try {
+        try
+        {
             await SubscribeAsync(cancellationToken);
-        } catch {
-           await _mqttClient.TryDisconnectAsync();
-           throw;
-        }   
+        }
+        catch
+        {
+            await _mqttClient.TryDisconnectAsync();
+            throw;
+        }
     }
 
 
     private async Task SubscribeAsync(
-        CancellationToken cancellationToken)
+    CancellationToken cancellationToken)
     {
         MqttQualityOfServiceLevel qos =
             GetQualityOfServiceLevel();
@@ -164,9 +167,26 @@ public sealed class MqttReceiverService : BackgroundService
                 cancellationToken);
 
 
-        _logger.LogInformation(
-            "Suscripción MQTT realizada. Topic={Topic}",
-            _options.Topic);
+        foreach (MqttClientSubscribeResultItem item in result.Items)
+        {
+            /*
+             * Los códigos >= 0x80 representan rechazo/error.
+             */
+
+            if ((int)item.ResultCode >= 0x80)
+            {
+                throw new InvalidOperationException(
+                    $"El broker MQTT rechazó la suscripción " +
+                    $"'{item.TopicFilter.Topic}'. " +
+                    $"Result={item.ResultCode}");
+            }
+
+
+            _logger.LogInformation(
+                "Suscripción MQTT aceptada. Topic={Topic}, Result={Result}",
+                item.TopicFilter.Topic,
+                item.ResultCode);
+        }
     }
 
 
