@@ -5,3 +5,5 @@ artifacts/package
 .git
 data
 .env
+**/appsettings.json
+**/appsettings.json
