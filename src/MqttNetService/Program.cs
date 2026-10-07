@@ -1,4 +1,4 @@
-using MqttNetService;
+using MqttNetService.Mqtt;
 
 var builder = Host.CreateApplicationBuilder(args);
 
