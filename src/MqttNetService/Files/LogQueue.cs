@@ -1,13 +1,11 @@
 using System.Threading.Channels;
-using Microsoft.Extensions.Options;
 namespace MqttNetService.Files;
 
 public sealed class LogQueue
 {
     private readonly Channel<Message> _channel;
-    public LogQueue(IOptions<FileLogOptions> options)
-    {
-        _channel = Channel.CreateBounded<Message>(new BoundedChannelOptions(options.Value.QueueCapacity){
+    public LogQueue(){
+        _channel = Channel.CreateBounded<Message>(new BoundedChannelOptions(11111){
                 SingleReader = true,
                 SingleWriter = false,
                 FullMode = BoundedChannelFullMode.Wait,
@@ -16,12 +14,10 @@ public sealed class LogQueue
         );
     }
     public ChannelReader<Message> Reader => _channel.Reader;
-    public ValueTask EnqueueAsync(Message message)
-    {
+    public ValueTask EnqueueAsync(Message message){
         return _channel.Writer.WriteAsync(message);
     }
-    public void Complete(Exception? error = null)
-    {
+    public void Complete(Exception? error = null){
         _channel.Writer.TryComplete(error);
     }
 }

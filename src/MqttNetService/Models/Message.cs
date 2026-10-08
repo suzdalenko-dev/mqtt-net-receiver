@@ -1,7 +1,9 @@
 public sealed record Message
 (
-    DateTimeOffset DateUtc,
-    DateTimeOffset DateLocal,
+    // utc date
+    DateTime DateUtc,
+    // local date
+    DateTime DateLocal,
     string Topic,
     string Content
 );
