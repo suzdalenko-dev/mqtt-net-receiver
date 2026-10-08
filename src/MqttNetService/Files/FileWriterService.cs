@@ -53,10 +53,10 @@ public sealed class FileWriterService : BackgroundService
         Directory.CreateDirectory(yearDirectory);
         string filePath = Path.Combine(yearDirectory, message.DateUtc.ToString("MM", CultureInfo.InstalledUICulture)+".jsonl");
         var entry = new {
-            date_utc  = message.DateUtc.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-            date_loca = message.DateLocal.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-            topic     = message.Topic,
-            content   = ParseContent(message.Content)
+            date_utc   = message.DateUtc.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+            date_local = message.DateLocal.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+            topic      = message.Topic,
+            content    = ParseContent(message.Content)
         };
         string jsonLine = JsonSerializer.Serialize(entry, JsonOptions);
         await File.AppendAllTextAsync(filePath, jsonLine+"\n", Utf8WithoutBom);
