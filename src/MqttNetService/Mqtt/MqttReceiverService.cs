@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Formatter;
 using MQTTnet.Protocol;
+using MqttNetService.Files;
 namespace MqttNetService.Mqtt;
 
 public sealed class MqttReceiverService : BackgroundService
@@ -10,14 +11,15 @@ public sealed class MqttReceiverService : BackgroundService
     private readonly MqttOptions _options;
     private readonly IMqttClient _mqttClient;
     private readonly MqttClientOptions _mqttClientOptions;
-
     private bool _stopping;
+    private readonly LogQueue _logQueue;
 
 
-    public MqttReceiverService(ILogger<MqttReceiverService> logger, IOptions<MqttOptions> options)
+    public MqttReceiverService(ILogger<MqttReceiverService> logger, IOptions<MqttOptions> options, LogQueue logQueue)
     {
-        _logger = logger;
-        _options = options.Value;
+        _logger   = logger;
+        _options  = options.Value;
+        _logQueue = logQueue;
 
         ValidateOptions();
 
@@ -240,8 +242,18 @@ public sealed class MqttReceiverService : BackgroundService
     }
 
 
-    private Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs args){
+    private async Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs args){
+        DateTime dateUtc = DateTime.UtcNow;
         string payload = args.ApplicationMessage.ConvertPayloadToString() ?? string.Empty;
+        var message = new Message(dateUtc, dateUtc.ToLocalTime(), args.ApplicationMessage.Topic, args.ApplicationMessage.ConvertPayloadToString() ?? string.Empty);
+        try {
+            await _logQueue.EnqueueAsync(message);
+        } catch (Exception e){
+            args.ProcessingFailed = true;
+            if (!_stopping){
+                throw;
+            }
+        }
 
         _logger.LogInformation(
             "MQTT RX | Topic={Topic} | QoS={Qos} | Retain={Retain} | Payload={Payload}",

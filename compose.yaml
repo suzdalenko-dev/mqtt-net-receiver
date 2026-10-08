@@ -11,7 +11,10 @@ services:
 
     environment:
       DOTNET_ENVIRONMENT: Production  # Variable que Compose introduce en el CONTENEDOR.
+      FileLog__Directory /app/data
 
+    volumes:
+      - mqtt-log-data:/app/data
 
 
 
