@@ -29,12 +29,12 @@ public sealed class FileWriterService : BackgroundService
     {
         try {
             Directory.CreateDirectory(_dataDirectory);
-            _loger.LogInformation("Writer is inited. Directory={}", _dataDirectory);
+            _loger.LogInformation("Writer is inited. Directory={Directory}", _dataDirectory);
             // we read until the queue is closes and emptied
             await foreach(Message message in _logQueue.Reader.ReadAllAsync())
             {
                 await WriteMessageAsync(message);
-                await DeletePreviosYear(message.DateUtc);
+                DeletePreviosYear(message.DateUtc);
             }
             _loger.LogInformation("Writer stoped. Queue emptied");
         

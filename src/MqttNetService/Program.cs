@@ -1,3 +1,4 @@
+using MqttNetService.Files;
 using MqttNetService.Mqtt;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -7,12 +8,22 @@ var builder = Host.CreateApplicationBuilder(args);
 // ---------------------------------------------------------
 
 builder.Services.Configure<MqttOptions>(builder.Configuration.GetSection("Mqtt"));
-
+builder.Services.Configure<FileLogOptions>(builder.Configuration.GetSection("FileLog"));
+builder.Services.AddSingleton<LogQueue>();
+builder.Services.Configure<HostOptions>(options =>
+{
+   options.ServicesStartConcurrently = false;
+   options.ShutdownTimeout = TimeSpan.FromSeconds(60);
+   options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.StopHost;
+});
 // ---------------------------------------------------------
 // Background services
 // ---------------------------------------------------------
 
+builder.Services.AddHostedService<FileWriterService>();
 builder.Services.AddHostedService<MqttReceiverService>();
+
+
 
 // builder.Services.AddHostedService<Worker>();
 var host = builder.Build();
