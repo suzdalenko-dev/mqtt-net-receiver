@@ -28,6 +28,7 @@ services:
 # docker compose logs --tail 50 -f mqtt
 # docker stats
 # docker top mqtt-mqtt-net-service-1
+# docker compose logs mqtt-net-service
 
 # docker compose up -d --build
 # docker compose logs --tail 50 -f mqtt
