@@ -17,8 +17,6 @@ services:
     volumes:
       - ./src/MqttNetService/data:/app/data
 
-volumes:
-  mqtt-log-data:
 
 
 
