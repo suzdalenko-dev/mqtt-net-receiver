@@ -261,8 +261,6 @@ public sealed class MqttReceiverService : BackgroundService
             (int)args.ApplicationMessage.QualityOfServiceLevel,
             args.ApplicationMessage.Retain,
             payload);
-
-        return Task.CompletedTask;
     }
 
 

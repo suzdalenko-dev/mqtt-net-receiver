@@ -1,25 +1,16 @@
 using MqttNetService.Files;
 using MqttNetService.Mqtt;
 
+// Preparar configuracion, logs y registros de servicios
 var builder = Host.CreateApplicationBuilder(args);
-
-// ---------------------------------------------------------
-// MQTT configuration
-// ---------------------------------------------------------
-
+// Asociar la seccion MQTT con la clase MqttOptions
 builder.Services.Configure<MqttOptions>(builder.Configuration.GetSection("Mqtt"));
+// Asocias la seccion Filelog con FileLogOptions
 builder.Services.Configure<FileLogOptions>(builder.Configuration.GetSection("FileLog"));
+// Registrar una unica cola compartida
 builder.Services.AddSingleton<LogQueue>();
-builder.Services.Configure<HostOptions>(options =>
-{
-   options.ServicesStartConcurrently = false;
-   options.ShutdownTimeout = TimeSpan.FromSeconds(60);
-   options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.StopHost;
-});
-// ---------------------------------------------------------
-// Background services
-// ---------------------------------------------------------
 
+// Registrar trabajos que deben permanecer funcionando
 builder.Services.AddHostedService<FileWriterService>();
 builder.Services.AddHostedService<MqttReceiverService>();
 
