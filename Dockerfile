@@ -12,6 +12,7 @@ RUN dotnet publish MqttNetService.csproj -c Release -o /out --no-restore -p:UseA
 
 FROM mcr.microsoft.com/dotnet/runtime:10.0
 WORKDIR /app
+RUN mkdir -p /app/data && chown "$APP_UID" /app/data
 COPY --from=pepito /out/ ./
 
 USER $APP_UID

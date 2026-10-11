@@ -7,7 +7,8 @@ services:
     image: net-serv                   # La imagen resultante tendrá el nombre/tag net-serv.
                                       # Después Compose crea el contenedor usando esa imagen.
 
-    restart: unless-stopped           # Política de reinicio del CONTENEDOR.
+    restart: unless-stopped           # Política de reinicio del CONTENEDOR
+    stop_grace_period: 45s
 
     environment:
       DOTNET_ENVIRONMENT: Production  # Variable que Compose introduce en el CONTENEDOR.
@@ -15,6 +16,9 @@ services:
 
     volumes:
       - mqtt-log-data:/app/data
+
+volumes:
+  mqtt-log-data:
 
 
 
