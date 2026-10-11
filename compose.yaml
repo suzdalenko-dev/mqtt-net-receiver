@@ -5,7 +5,7 @@ services:
                                       # Como no indico otro fichero, busca ./Dockerfile.
 
     image: net-serv                   # La imagen resultante tendrá el nombre/tag net-serv.
-                                      # Después Compose crea el contenedor usando esa imagen.
+    user: "1000:1000"                 # Después Compose crea el contenedor usando esa imagen.
 
     restart: unless-stopped           # Política de reinicio del CONTENEDOR
     stop_grace_period: 45s
@@ -15,7 +15,7 @@ services:
       FileLog__Directory: /app/data
 
     volumes:
-      - mqtt-log-data:/app/data
+      - ./src/MqttNetService/data:/app/data
 
 volumes:
   mqtt-log-data:
