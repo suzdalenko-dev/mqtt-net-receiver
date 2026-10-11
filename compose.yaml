@@ -1,4 +1,4 @@
-name: mqtt
+name: mqttnet
 services:
   mqtt-net-service:
     build: .                          # Compose pide construir una imagen usando esta carpeta como contexto.

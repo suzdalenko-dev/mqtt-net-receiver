@@ -3,7 +3,7 @@ artifacts/obj
 artifacts/publish
 artifacts/package
 .git
-data
+**/data
 .env
 **/appsettings.json
 **/appsettings.json
