@@ -11,7 +11,6 @@ services:
     stop_grace_period: 45s
 
     environment:
-      DOTNET_ENVIRONMENT: Production  # Variable que Compose introduce en el CONTENEDOR.
       FileLog__Directory: /app/data
 
     volumes:
