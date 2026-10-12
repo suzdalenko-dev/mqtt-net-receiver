@@ -1,5 +1,8 @@
 ### mqtt-net-service
 
+Paso 4 implementado: PostgreSQL con pool compartido, cola independiente y reintentos.
+Configuración y explicación: [Paso 4: PostgreSQL](docs/paso-4-postgresql.md).
+
 Our itinerary should be:
 1. C# y .NET fundamentales: tipos, clases, interfaces, generics, namespaces, assemblies, using, exceptions, nullable.
 2. Generic Host: Program.cs, DI, configuración, logging, lifecycle.

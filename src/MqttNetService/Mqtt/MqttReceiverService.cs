@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Formatter;
 using MQTTnet.Protocol;
+using MqttNetService.Database;
 using MqttNetService.Files;
 namespace MqttNetService.Mqtt;
 
@@ -11,15 +12,18 @@ public sealed class MqttReceiverService : BackgroundService
     private readonly MqttOptions _options;
     private readonly IMqttClient _mqttClient;
     private readonly MqttClientOptions _mqttClientOptions;
-    private bool _stopping;
+    private volatile bool _stopping;
     private readonly LogQueue _logQueue;
+    private readonly DbQueue _dbQueue;
+    private readonly CancellationTokenSource _enqueueCancellation = new();
 
 
-    public MqttReceiverService(ILogger<MqttReceiverService> logger, IOptions<MqttOptions> options, LogQueue logQueue)
+    public MqttReceiverService(ILogger<MqttReceiverService> logger, IOptions<MqttOptions> options, LogQueue logQueue, DbQueue dbQueue)
     {
         _logger   = logger;
         _options  = options.Value;
         _logQueue = logQueue;
+        _dbQueue  = dbQueue;
 
         ValidateOptions();
 
@@ -35,8 +39,7 @@ public sealed class MqttReceiverService : BackgroundService
         _mqttClient.ConnectedAsync += OnConnectedAsync;
         _mqttClient.DisconnectedAsync += OnDisconnectedAsync;
 
-        // De momento solamente comprobamos que llegan mensajes.
-        // En el punto 2 este método enviará los mensajes a una cola.
+        // Cada mensaje recibido se entrega a las dos colas independientes.
         _mqttClient.ApplicationMessageReceivedAsync += OnApplicationMessageReceivedAsync;
     }
 
@@ -245,14 +248,18 @@ public sealed class MqttReceiverService : BackgroundService
     private async Task OnApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs args){
         DateTime dateUtc = DateTime.UtcNow;
         string payload = args.ApplicationMessage.ConvertPayloadToString() ?? string.Empty;
-        var message = new Message(dateUtc, dateUtc.ToLocalTime(), args.ApplicationMessage.Topic, args.ApplicationMessage.ConvertPayloadToString() ?? string.Empty);
+        var message = new Message(dateUtc, dateUtc.ToLocalTime(), args.ApplicationMessage.Topic, payload);
         try {
-            await _logQueue.EnqueueAsync(message);
-        } catch (Exception e){
+            await _logQueue.EnqueueAsync(message, _enqueueCancellation.Token);
+            await _dbQueue.EnqueueAsync(message, _enqueueCancellation.Token);
+        } catch (OperationCanceledException) when (_stopping){
             args.ProcessingFailed = true;
-            if (!_stopping){
-                throw;
-            }
+            args.AutoAcknowledge = false;
+            return;
+        } catch {
+            args.ProcessingFailed = true;
+            args.AutoAcknowledge = false;
+            throw;
         }
 
         _logger.LogInformation(
@@ -451,6 +458,8 @@ public sealed class MqttReceiverService : BackgroundService
 
     public override async Task StopAsync(CancellationToken cancellationToken){
         _stopping = true;
+        // Desbloquear el callback si alguna cola está llena antes de desconectar.
+        _enqueueCancellation.Cancel();
 
         await base.StopAsync(cancellationToken);
     }
@@ -461,6 +470,7 @@ public sealed class MqttReceiverService : BackgroundService
         _mqttClient.Dispose();
 
         base.Dispose();
+        _enqueueCancellation.Dispose();
     }
 
 

@@ -14,8 +14,8 @@ public sealed class LogQueue
         );
     }
     public ChannelReader<Message> Reader => _channel.Reader;
-    public ValueTask EnqueueAsync(Message message){
-        return _channel.Writer.WriteAsync(message);
+    public ValueTask EnqueueAsync(Message message, CancellationToken cancellationToken = default){
+        return _channel.Writer.WriteAsync(message, cancellationToken);
     }
     public void Complete(Exception? error = null){
         _channel.Writer.TryComplete(error);

@@ -7,4 +7,5 @@ public sealed class DBOptions
     public string Username {get; set;} = "";
     public string Password {get; set;} = "";
     public string Table {get; set;} = "mqtt_record_lines";
+    public int RetryDelaySeconds {get; set;} = 1;
 }
